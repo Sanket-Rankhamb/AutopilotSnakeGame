@@ -1,7 +1,7 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
-#include "Snake.h"
+#include "snake.h"
 
 struct Food {
 	int x, y;
@@ -20,8 +20,10 @@ class GameBoard{
     bool isBorderCollision();
     int generateFood();
     void drawFood();
-	bool isSnakeEatingFood();   
+	bool isSnakeEatingFood();
+	bool isFreePosition(int x, int y);
+	int getFreeDirectionForSnake(); 
+	int getAutoDirection();  
 };
 
 #endif
-

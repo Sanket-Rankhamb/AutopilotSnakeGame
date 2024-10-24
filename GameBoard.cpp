@@ -148,3 +148,115 @@ bool GameBoard::isSnakeEatingFood(){
 	else return 0;
 }
 
+bool GameBoard::isFreePosition(int x, int y){
+	if( x < minX || x > maxX) return 0;
+	else if( y < minY || y > maxY) return 0;
+	else return !snake->isPositionOccupied(x, y);
+}
+
+int GameBoard::getFreeDirectionForSnake(){
+	int hx = snake->getHeadX();
+	int hy = snake->getHeadY();
+	if( isFreePosition(hx + 1, hy) ) return RIGHT;
+	else if( isFreePosition(hx - 1, hy) ) return LEFT;
+	else if( isFreePosition(hx, hy - 1) ) return UP;
+	else if( isFreePosition(hx, hy + 1) ) return RIGHT;
+	else return snake->getDirection();
+}
+
+int GameBoard::getAutoDirection(){
+	
+	int d = snake->getDirection(), dir; // new direciton
+	int hx = snake->getHeadX();
+	int hy = snake->getHeadY();
+	int fx = food.x;
+	int fy = food.y;
+
+	if( d == RIGHT ){
+		
+		if(hy == fy){ // s and f at same line
+			if(hx < fx) dir = RIGHT; // f is infront of s
+			else dir = ( (hy == minY || hy != maxY) ? DOWN : UP ); //f is backword of s
+		} 
+		
+		else if(hx == fx) dir = ( (hy < fy ) ? DOWN : UP );// s and f are in same column
+		
+		else if(hx < fx) dir = RIGHT;
+		
+		else if( hy < fy) dir = DOWN; // s is upside of f
+		else dir = UP; // s is downside of f
+		
+	}
+	else if( d == LEFT ){
+		
+		if(hy == fy ){
+			if(hx > fx) dir = LEFT;
+			else dir = ( (hy == minY || hy != maxY) ? DOWN : UP );
+		} 
+		
+		else if(hx == fx) dir = ( (hy < fy ) ? DOWN : UP );
+		
+		else if(hx > fx) dir = LEFT;
+		
+		else if( hy < fy) dir = DOWN;
+		else dir = UP;	
+			
+	}
+	else if( d == UP ){
+		
+		if(hx == fx){ // s and f are in same column
+			if(hy > fy) dir = UP;  // f is infront of s
+			else dir = ( (hx == minX || hx != maxX) ? RIGHT : LEFT ); // f is backword of s
+		} 
+		
+		else if(hy == fy) dir = ( (hx < fx ) ? RIGHT : LEFT ); // s and f are in same line
+		
+		else if(hy > fy) dir = UP;
+		
+		else if( hx < fx ) dir = RIGHT;
+		else dir = LEFT;
+		
+	}
+	else if( d == DOWN ){
+		
+		if(hx == fx){ // s and f are in same column
+			if(hy < fy) dir = DOWN;  // f is infront of s
+			else dir = ( (hx == minX || hx != maxX) ? RIGHT : LEFT ); // f is backword of s
+		} 
+		
+		else if(hy == fy) dir = ( (hx < fx ) ? RIGHT : LEFT ); // s and f are in same line
+		
+		else if(hy < fy) dir = DOWN;
+		
+		else if( hx < fx ) dir = RIGHT;
+		else dir = LEFT;
+		
+	}
+	
+	// check for desided direction doesn't cause self colision
+	
+	int x, y;
+	if(dir == RIGHT){
+		x = hx + 1;
+		y = hy;
+	}
+	else if(dir == LEFT){
+		x = hx - 1;
+		y = hy;
+	}
+	else if(dir == UP){
+		x = hx;
+		y = hy - 1;
+	}
+	else if(dir == DOWN){
+		x = hx;
+		y = hy + 1;
+	}
+	
+	if( !isFreePosition(x, y) ) dir = getFreeDirectionForSnake();
+	
+	return dir;
+}
+
+
+
