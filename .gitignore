@@ -1,0 +1,9 @@
+# Ignore object files
+*.o
+*.dev
+*.layout
+*.obj
+*.exe
+*.out
+*.log
+/build/
